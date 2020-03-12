@@ -27,8 +27,8 @@ const target = argv.target || 'browser';
 
 let configuration = getJson('./gulpfile.config.json');
 
-const compileTask = parallel(compileScss, compileJs, compileTs); // compilePartials, compileSnippets
-const bundleTask = parallel(bundleCss, bundleJs);
+const compileTask = parallel(compileScss); // compilePartials, compileSnippets
+const bundleTask = parallel(bundleCss);
 
 exports.compile = compileTask;
 exports.bundle = bundleTask;
@@ -64,106 +64,6 @@ function compileScss(done) {
 	return tasks.length ? parallel(...tasks)(done) : done();
 }
 
-function compileJs(done) {
-	const items = getCompilers('.js');
-	const tasks = items.map(item => function itemTask(done) {
-		return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
-			.pipe(plumber())
-			.pipe(through2.obj((file, enc, next) => {
-					browserify(file.path)
-						.transform('babelify', {
-							global: true,
-							presets: [
-							["@babel/preset-env", {
-									targets: {
-										chrome: '58',
-										ie: '11'
-									},
-							}]
-						],
-							extensions: ['.js']
-						})
-						.bundle((error, response) => {
-							if (error) {
-								logger.error('compile:js', error);
-							} else {
-								logger.log('browserify.bundle.success', item.output);
-								file.contents = response;
-								next(null, file);
-							}
-						})
-						.on('error', (error) => {
-							logger.error('compile:js', error.toString());
-						});
-				}
-				/*, (done) => {
-					logger.log('through2.done', error);
-				}*/
-			))
-			.pipe(rename(item.output))
-			.pipe(tfsCheckout())
-			.pipe(dest('.', item.minify ? null : { sourcemaps: '.' }))
-			.pipe(filter('**/*.js'))
-			.on('end', () => logger.log('compile', item.output))
-			.pipe(gulpif(item.minify, terser()))
-			.pipe(gulpif(item.minify, rename({ extname: '.min.js' })))
-			.pipe(tfsCheckout(!item.minify))
-			.pipe(gulpif(item.minify, dest('.', { sourcemaps: '.' })))
-			.pipe(filter('**/*.js'));
-	});
-	return tasks.length ? parallel(...tasks)(done) : done();
-}
-
-function compileTs(done) {
-	let options = {
-		global: true,
-		plugins: ['@babel/plugin-transform-flow-strip-types'],
-		presets: [
-			["@babel/preset-env", {
-				targets: {
-					browsers: "last 2 versions, ie 11"
-				},
-				modules: false
-			}],
-		],
-		extensions: ['.ts']
-	};
-	const items = getCompilers('.ts');
-	const tasks = items.map(item => function itemTask(done) {
-		logger.log(item.input);
-		return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
-			.pipe(plumber())
-			.pipe(through2.obj((file, enc, next) => {
-				browserify(file.path)
-					.plugin(tsify)
-					.transform('babelify', options)
-					.bundle((error, response) => {
-						if (error) {
-							logger.error('compile:ts', error);
-						} else {
-							file.contents = response;
-							next(null, file);
-						}
-					})
-					.on('error', (error) => {
-						logger.error('compile:ts', error.toString());
-					});
-			}, (done) => {
-				done();
-			}))
-			.pipe(rename(item.output))
-			.pipe(tfsCheckout())
-			.pipe(dest('.', item.minify ? null : { sourcemaps: '.' }))
-			.pipe(filter('**/*.js'))
-			.on('end', () => logger.log('compile', item.output))
-			.pipe(gulpif(item.minify, terser()))
-			.pipe(gulpif(item.minify, rename({ extname: '.min.js' })))
-			.pipe(tfsCheckout(!item.minify))
-			.pipe(gulpif(item.minify, dest('.', { sourcemaps: '.' })))
-			.pipe(filter('**/*.js'));
-	});
-	return tasks.length ? parallel(...tasks)(done) : done();
-}
 
 function compilePartials() {
 	return src('./src/artisan/**/*.html', { base: './src/artisan/' })
@@ -241,14 +141,6 @@ function bundleCss(done) {
 	return tasks.length ? parallel(...tasks)(done) : done();
 }
 
-function bundleJs(done) {
-	const items = getBundles('.js');
-	const tasks = items.map(item => function itemTask(done) {
-		return doJsBundle(item);
-	});
-	return tasks.length ? parallel(...tasks)(done) : done();
-}
-
 function doCssBundle(item) {
 	const skip = item.input.length === 1 && item.input[0] === item.output;
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
@@ -262,21 +154,6 @@ function doCssBundle(item) {
 		.pipe(tfsCheckout(!item.minify))
 		.pipe(gulpif(item.minify, dest('.', { sourcemaps: '.' })))
 		.pipe(filter('**/*.css'));
-}
-
-function doJsBundle(item) {
-	const skip = item.input.length === 1 && item.input[0] === item.output;
-	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
-		.pipe(plumber())
-		.pipe(gulpif(!skip, concat(item.output)))
-		.pipe(tfsCheckout(skip))
-		.pipe(gulpif(!skip, dest('.')))
-		.on('end', () => logger.log('bundle', item.output))
-		.pipe(gulpif(item.minify, terser()))
-		.pipe(gulpif(item.minify, rename({ extname: '.min.js' })))
-		.pipe(tfsCheckout(!item.minify))
-		.pipe(gulpif(item.minify, dest('.', { sourcemaps: '.' })))
-		.pipe(filter('**/*.js'));
 }
 
 // TFS
@@ -311,10 +188,6 @@ function watchTask(done) {
 	// watch compile files
 	// scss
 	const scssWatch = watch(getCompilersGlobs('.scss'), compileScss).on('change', logWatch);
-	// js
-	const jsWatch = watch(getCompilersGlobs('.js'), compileJs).on('change', logWatch);
-	// ts
-	const tsWatch = watch(getCompilersGlobs('.ts'), compileTs).on('change', logWatch);
 
 	// watch bundle files
 	// css
@@ -324,11 +197,6 @@ function watchTask(done) {
 		}).on('change', logWatch);
 	});
 	// js
-	const jsWatches = getBundles('.js').map((item) => {
-		return watch(item.input, function bundleJs(done) {
-			return doJsBundle(item);
-		}).on('change', logWatch);
-	});
 
 	// CONFIG
 	const configWatch = watch('./gulpfile.config.json', function config(done) {

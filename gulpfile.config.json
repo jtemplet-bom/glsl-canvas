@@ -2,10 +2,6 @@
 	"targets": {
 		"browser": {
 			"compile": [{
-				"input": "src/glsl-canvas/glsl-canvas.ts",
-				"output": "docs/js/glsl-canvas.js",
-				"minify": true
-			}, {
 				"input": "src/docs/scss/docs.scss",
 				"output": "docs/css/docs.css",
 				"minify": true
@@ -17,14 +13,6 @@
 				"output": "docs/js/vendors.js",
 				"minify": true
 			}]
-		},
-		"dist": {
-			"compile": [{
-				"input": "src/glsl-canvas/glsl-canvas.ts",
-				"output": "dist/glsl-canvas.js",
-				"minify": true
-			}],
-			"bundle": []
 		}
 	},
 	"options": {
