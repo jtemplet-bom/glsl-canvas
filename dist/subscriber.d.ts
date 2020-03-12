@@ -13,3 +13,4 @@ export default class Subscriber {
     off(event: string, callback?: Function): this;
     trigger(event: string, ...data: any[]): this;
 }
+//# sourceMappingURL=subscriber.d.ts.map

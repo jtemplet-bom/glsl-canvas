@@ -77,3 +77,4 @@ export default class Textures extends IterableStringMap<Texture> {
     createOrUpdate(gl: WebGLRenderingContext | WebGL2RenderingContext, key: string, urlElementOrData: string | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | Element | TextureData, index: number, options: TextureOptions, workpath: string): Promise<Texture>;
 }
 export {};
+//# sourceMappingURL=textures.d.ts.map

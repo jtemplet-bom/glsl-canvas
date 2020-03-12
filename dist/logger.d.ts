@@ -4,3 +4,4 @@ export default class Logger {
     static warn(...datas: any[]): void;
     static error(...datas: any[]): void;
 }
+//# sourceMappingURL=logger.d.ts.map

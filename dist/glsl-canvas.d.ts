@@ -29,7 +29,7 @@ export declare class GlslCanvasTimer {
     pause(): void;
     next(): GlslCanvasTimer;
 }
-export default class GlslCanvas extends Subscriber {
+declare class GlslCanvas extends Subscriber {
     options: GlslCanvasOptions;
     canvas: HTMLCanvasElement;
     gl: WebGLRenderingContext | WebGL2RenderingContext;
@@ -104,3 +104,5 @@ declare global {
         GlslCanvas: any;
     }
 }
+export default GlslCanvas;
+//# sourceMappingURL=glsl-canvas.d.ts.map

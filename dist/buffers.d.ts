@@ -38,3 +38,4 @@ export default class Buffers extends IterableStringMap<IOBuffer> {
     get count(): number;
     static getBuffers(gl: WebGLRenderingContext | WebGL2RenderingContext, fragmentString: string, vertexString: string): Buffers;
 }
+//# sourceMappingURL=buffers.d.ts.map

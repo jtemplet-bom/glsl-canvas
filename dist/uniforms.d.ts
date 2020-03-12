@@ -68,3 +68,4 @@ export default class Uniforms extends IterableStringMap<Uniform> {
     apply(gl: WebGLRenderingContext | WebGL2RenderingContext, program: WebGLProgram): void;
     clean(): void;
 }
+//# sourceMappingURL=uniforms.d.ts.map

@@ -41,3 +41,4 @@ export default class Context {
     static createProgram(gl: WebGLRenderingContext | WebGL2RenderingContext, shaders: WebGLShader[], attributes?: any[], locations?: number[]): WebGLProgram;
     static createVertexBuffers(gl: WebGLRenderingContext | WebGL2RenderingContext, program: WebGLProgram): ContextVertexBuffers;
 }
+//# sourceMappingURL=context.d.ts.map

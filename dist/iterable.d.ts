@@ -12,3 +12,4 @@ export default class IterableStringMap<T> {
     forEach(callbackfn: Function): void;
     reduce(callbackfn: Function, initialValue?: any): any;
 }
+//# sourceMappingURL=iterable.d.ts.map

@@ -62,7 +62,7 @@ export class GlslCanvasTimer {
 
 }
 
-export default class GlslCanvas extends Subscriber {
+class GlslCanvas extends Subscriber {
 
 	options: GlslCanvasOptions;
 	canvas: HTMLCanvasElement;
@@ -800,6 +800,8 @@ export default class GlslCanvas extends Subscriber {
 declare global {
 	interface Window { GlslCanvas: any; }
 }
+
+export default GlslCanvas;
 
 window.GlslCanvas = window.GlslCanvas || GlslCanvas;
 // (<any>(window)).GlslCanvas = GlslCanvas;

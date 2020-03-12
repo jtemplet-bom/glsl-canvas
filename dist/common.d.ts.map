@@ -1,0 +1,1 @@
+{"version":3,"file":"common.d.ts","sourceRoot":"","sources":["../src/glsl-canvas/common.ts"],"names":[],"mappings":"AAAA,OAAO,kBAAkB,CAAC;AAE1B,MAAM,CAAC,OAAO,OAAO,MAAM;IAC1B,MAAM,CAAC,KAAK,CAAC,GAAG,EAAE,MAAM,GAAG,OAAO,CAAC,MAAM,CAAC;CAsB1C"}
